@@ -1,9 +1,12 @@
 const mongoose = require('mongoose')
 
 const tokenSchema = mongoose.Schema({
-    token:{
+    successToken:{
         type:String,
-        required:true,
+        unique:true,
+    },
+    refreshToken:{
+        type:String,
         unique:true,
     },
     owner:{
@@ -13,7 +16,7 @@ const tokenSchema = mongoose.Schema({
     },
     tokenExpriation:{
         type:Date,
-        expires:"1h",
+        expires:"30d",
         default:Date.now
     }
 })

@@ -8,6 +8,7 @@ router.post('/',controller.postUser)
 
 router.post('/sign-in',controller.postSignInToken)
 router.post('/sign-out',controller.postSignOutToken)
+router.put('/:id/token',controller.putRefreshToken)
 
 
 

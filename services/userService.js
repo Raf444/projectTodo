@@ -28,12 +28,12 @@ async postSignInToken(email,password){
     }
     const passwordCompare = await bcrypt.compare(password,user.password)
     if(passwordCompare){
-        const  token = jwt.sign({ userId:user._id }, process.env.SECRET_WORD, { expiresIn: '1h' });
+        const  successToken = jwt.sign({ userId:user._id }, process.env.SECRET_WORD, { expiresIn: '1h' });
         const saveToken = await this.models.token.create({
             owner:user._id,
-            token:token
+            successToken
         })
-        if(saveToken)return token
+        if(saveToken)return successToken
     
     }else{
         throw new Error("password invalid")
@@ -54,6 +54,21 @@ async postSignOutToken(token){
     }else{
         console.log(decoded);
         throw new Error("token invalid")
+    }
+}
+
+async putRefreshToken(id){
+    try {
+        const user  = await this.models.token.findOne({owner:id})
+        if(!user)throw new Error("user or userId not found")
+        const refreshToken = jwt.sign({ userId:id }, process.env.SECRET_WORD, { expiresIn: '30d' })
+        const addRefreshToken = await this.models.token.replaceOne({owner:id},{owner:id,refreshToken:refreshToken})
+        if(!addRefreshToken)throw new Error("refreshToken not generetad")
+        console.log("addRefreshToken",addRefreshToken);
+        console.log("refreshToken",refreshToken);
+        return refreshToken
+    } catch (error) {
+        throw new Error(error.message)
     }
 }
     }

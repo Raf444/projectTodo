@@ -29,6 +29,16 @@ class userController{
 
         }
     }
+
+    async putRefreshToken(req,res){
+        const {id} = req.params
+        try {
+            const refreshToken = await req.app.services.user.putRefreshToken(id)
+            res.json({success:true,refreshToken})
+        } catch (error) {
+            res.status(500).json({err:error.message})
+        }
+    }
 }
 
 module.exports = userController
