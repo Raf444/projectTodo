@@ -59,15 +59,22 @@ async postSignOutToken(token){
     }
 }
 
-async putRefreshToken(id){
+async putRefreshToken(id,token){
+
+
     try {
+        const tokenDecod = jwt.verify(token,process.env.SECRET_WORD)
+
+        //!
+            const verifyDBsuccesToken = await this.models.token.findOne({successToken:token,owner:tokenDecod.userId})
+                const verifyDBrefreshToken = await this.models.token.findOne({refreshToken:token,owner:tokenDecod.userId})
+                if(!verifyDBrefreshToken && !verifyDBsuccesToken)throw new Error("token not found the tokenDB")
+        //!
         const user  = await this.models.token.findOne({owner:id})
         if(!user)throw new Error("user or userId not found")
         const refreshToken = jwt.sign({ userId:id }, process.env.SECRET_WORD, { expiresIn: '30d' })
         const addRefreshToken = await this.models.token.replaceOne({owner:id},{owner:id,refreshToken:refreshToken})
         if(!addRefreshToken)throw new Error("refreshToken not generetad")
-        console.log("addRefreshToken",addRefreshToken);
-        console.log("refreshToken",refreshToken);
         return refreshToken
     } catch (error) {
         throw new Error(error.message)
@@ -112,8 +119,6 @@ async putUserPassword(body,token){
 
     const user = await this.models.user.findOne({_id:tokenDecod.userId})
     const verfyPassword = await bcrypt.compare(body.oldPassword,user.password)
-    console.log(body.oldPassword);
-    console.log(verfyPassword);
     if(!verfyPassword)throw new Error('oldPassword invalid')
 
 

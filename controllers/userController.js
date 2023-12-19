@@ -38,8 +38,11 @@ class userController{
 
     async putRefreshToken(req,res){
         const {id} = req.params
+        const token =req.headers.authorization && req.headers.authorization.split(" ")[1]
+        if(!token)res.json({err:"token not found the authorization token"})
+        
         try {
-            const refreshToken = await req.app.services.user.putRefreshToken(id)
+            const refreshToken = await req.app.services.user.putRefreshToken(id,token)
             res.json({success:true,refreshToken})
         } catch (error) {
             res.status(500).json({err:error.message})
