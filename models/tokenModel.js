@@ -4,10 +4,20 @@ const tokenSchema = mongoose.Schema({
     successToken:{
         type:String,
         unique:true,
+        tokenExpriation:{
+            type:Date,
+            expires:"1h",
+            default:Date.now
+        }
     },
     refreshToken:{
         type:String,
         unique:true,
+        tokenExpriation:{
+            type:Date,
+            expires:"30d",
+            default:Date.now
+        }
     },
     owner:{
         type:mongoose.Types.ObjectId,
@@ -16,7 +26,7 @@ const tokenSchema = mongoose.Schema({
     },
     tokenExpriation:{
         type:Date,
-        expires:"30d",
+        expires:"31d",
         default:Date.now
     }
 })
