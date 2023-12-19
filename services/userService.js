@@ -2,15 +2,17 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 
+
 class userService{
     constructor(models){
         this.models = models
     }
 
+    
 
 async postUser(body) {
     try {
-        const hashPassword = await bcrypt.hash(body.password, process.env.SALT_PASSWORD);
+        const hashPassword = await bcrypt.hash(body.password, 10);
         const newUser = await this.models.user.create({ ...body, password: hashPassword });
         return newUser;
     } catch (error) {
@@ -71,6 +73,56 @@ async putRefreshToken(id){
         throw new Error(error.message)
     }
 }
+
+async getUserInfo(token){ //! ogtagorcel sarqvac middleware vory stuguma tokenery dostupic araj
+
+    const tokenDecod = jwt.verify(token,process.env.SECRET_WORD)
+
+//!
+    const verifyDBsuccesToken = await this.models.token.findOne({successToken:token,owner:tokenDecod.userId})
+        const verifyDBrefreshToken = await this.models.token.findOne({refreshToken:token,owner:tokenDecod.userId})
+        if(!verifyDBrefreshToken && !verifyDBsuccesToken)throw new Error("token not found the tokenDB")
+//!
+    const userInfo = await this.models.user.findOne({_id:tokenDecod.userId})
+    if(!userInfo)throw new Error("user not found or token invalid")
+    return userInfo
+
+}
+
+async putUserInfo(body,token){
+    const tokenDecod = jwt.decode(token,process.env.SECRET_WORD)
+    if(!tokenDecod)throw new Error("token invalid ")
+    const tokenDBsuccess = await this.models.token.findOne({successToken:body.token})
+    const tokenDBrefresh = await this.models.token.findOne({refreshToken:body.token})
+    if(!tokenDBsuccess && !tokenDBrefresh) throw new Error("this token not found the tokenDB")
+    const updateUser = await this.models.user.updateOne({_id:tokenDecod.userId},{$set:{name:body.name,surname:body.surname}})
+    console.log(updateUser);
+    if(updateUser.n == 0 ) throw new Error("something went wrong")
+    return updateUser
+}
+
+async putUserPassword(body,token){
+    const tokenDecod = jwt.decode(token,process.env.SECRET_WORD)
+    if(!tokenDecod)throw new Error("token invalid ")
+    const tokenDBsuccess = await this.models.token.findOne({successToken:token})
+    const tokenDBrefresh = await this.models.token.findOne({refreshToken:token})
+    if(!tokenDBsuccess && !tokenDBrefresh) throw new Error("this token not found the tokenDB")
+
+    if(body.newPassword !== body.confirmNewPassword)throw new Error("confirmNewPassword invalid ")
+
+    const user = await this.models.user.findOne({_id:tokenDecod.userId})
+    const verfyPassword = await bcrypt.compare(body.oldPassword,user.password)
+    console.log(body.oldPassword);
+    console.log(verfyPassword);
+    if(!verfyPassword)throw new Error('oldPassword invalid')
+
+
+    const hashPassword = await bcrypt.hash(body.newPassword,10)
+    const updateUserPassword = await this.models.user.updateOne({_id:tokenDecod.userId},{$set:{password:hashPassword}})
+    if(updateUserPassword.n == 0 ) throw new Error("something went wrong")
+    return updateUserPassword
+}
+
     }
 
 

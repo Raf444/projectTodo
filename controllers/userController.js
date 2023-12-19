@@ -1,4 +1,10 @@
+
+
+
 class userController{
+
+
+    
     async postUser(req,res){
         const {body} = req
         try {
@@ -37,6 +43,41 @@ class userController{
             res.json({success:true,refreshToken})
         } catch (error) {
             res.status(500).json({err:error.message})
+        }
+    }
+
+    async getUserInfo(req,res){
+        const token = req.headers.authorization.split(" ")[1]
+        try {
+           
+            const userInfo = await req.app.services.user.getUserInfo(token)
+            res.json({data:userInfo})
+        } catch (error) {
+            res.status(500).json({err:error.message})
+        }
+    }
+
+    async putUserInfo(req,res){
+        const {body} = req
+        const token = req.headers.authorization.split(' ')[1]
+        try {
+            const updateUser = await req.app.services.user.putUserInfo(body,token)
+            res.json({success:true,data:updateUser})
+        } catch (error) {
+            res.status(500).json({err:error.message})
+
+        }
+    }
+
+    async putUserPassword(req,res){
+        const {body} = req
+        const token = req.headers.authorization.split(' ')[1]
+        try {
+            const updateUserPassword = await req.app.services.user.putUserPassword(body,token)
+            res.json({success:true,data:updateUserPassword})
+        } catch (error) {
+            res.status(500).json({err:error.message})
+
         }
     }
 }

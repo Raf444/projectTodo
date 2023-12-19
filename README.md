@@ -163,7 +163,7 @@ request body
 jwt: `{JWT string}` (required)
 `}`  
 
-#### Refresh token ?
+#### Refresh token +
 request url `API_HOST/user/:id/token`
 
 request method `PUT`
@@ -173,12 +173,12 @@ request body
 refreshToken: `{string}` (required)
 `}`
 
-#### Get user info
+#### Get user info +
 request url `API_HOST/user`
 
 request method `GET`
 
-#### Update user info
+#### Update user info +
 request url `API_HOST/user`
 
 request method `PUT`
