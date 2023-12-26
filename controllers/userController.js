@@ -9,9 +9,9 @@ class userController{
         const {body} = req
         try {
             const newUser = await req.app.services.user.postUser(body)
-            res.json({data:newUser})
+            res.send(newUser)
         } catch (error) {
-            res.status(500).json({err:error.message})
+            res.status(500).send(error.message)
         }
     }
 
@@ -19,9 +19,9 @@ class userController{
         const {email,password} = req.body
         try {
             const token = await req.app.services.user.postSignInToken(email,password)
-            res.json({success:true,token:token})
+            res.send(token)
         } catch (error) {
-            res.status(500).json({err:error.message})
+            res.status(500).json(error.message)
         }
     }
 
@@ -29,9 +29,9 @@ class userController{
         const {jwt} = req.body
         try {
             const token = await req.app.services.user.postSignOutToken(jwt)
-            res.json({success:true,token:token})
+            res.send(token)
         } catch (error) {
-            res.status(500).json({err:error.message})
+            res.status(500).send(error.message)
 
         }
     }
@@ -39,13 +39,13 @@ class userController{
     async putRefreshToken(req,res){
         const {id} = req.params
         const token =req.headers.authorization && req.headers.authorization.split(" ")[1]
-        if(!token)res.json({err:"token not found the authorization token"})
+        if(!token)res.status(401).send("token not found the authorization token")
         
         try {
             const refreshToken = await req.app.services.user.putRefreshToken(id,token)
-            res.json({success:true,refreshToken})
+            res.send(refreshToken)
         } catch (error) {
-            res.status(500).json({err:error.message})
+            res.status(500).send(error.message)
         }
     }
 
@@ -54,20 +54,20 @@ class userController{
         try {
            
             const userInfo = await req.app.services.user.getUserInfo(token)
-            res.json({data:userInfo})
+            res.send(userInfo)
         } catch (error) {
-            res.status(500).json({err:error.message})
+            res.status(500).send(error.message)
         }
     }
-
+       
     async putUserInfo(req,res){
         const {body} = req
         const token = req.headers.authorization.split(' ')[1]
         try {
             const updateUser = await req.app.services.user.putUserInfo(body,token)
-            res.json({success:true,data:updateUser})
+            res.send(updateUser)
         } catch (error) {
-            res.status(500).json({err:error.message})
+            res.status(500).send(error.message)
 
         }
     }
@@ -77,9 +77,9 @@ class userController{
         const token = req.headers.authorization.split(' ')[1]
         try {
             const updateUserPassword = await req.app.services.user.putUserPassword(body,token)
-            res.json({success:true,data:updateUserPassword})
+            res.send(updateUserPassword)
         } catch (error) {
-            res.status(500).json({err:error.message})
+            res.status(500).send(error.message)
 
         }
     }

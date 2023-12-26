@@ -3,7 +3,7 @@ class taskController{
         const {body} = req
         try {
             const newTask = await req.app.services.task.postTask(body)
-            res.json({data:newTask})
+            res.send(newTask)
         } catch (error) {
             res.status(500).json({err:error.message})
         }
@@ -13,7 +13,7 @@ class taskController{
     async getAllTask(req,res){
         try {
             const allTask = await req.app.services.task.getAllTask()
-            res.json({data:allTask})
+            res.send(allTask)
         } catch (error) {
             res.status(500).json({err:error.message})
         }
@@ -23,7 +23,7 @@ class taskController{
         const {taskId} = req.params
         try {
             const task = await req.app.services.task.getTaskById(taskId)
-            res.json({data:task})
+            res.send(task)
         } catch (error) {
             res.status(500).json({err:error.message})
 
@@ -35,7 +35,7 @@ class taskController{
         const {body} = req
         try {
             const patchTask = await req.app.services.task.patchTaskById(taskId,body)
-            res.json({data:patchTask})
+            res.send(patchTask)
         } catch (error) {
             res.status(500).json({err:error.message})
 
@@ -46,10 +46,10 @@ class taskController{
         const {taskId} = req.params
         try {
             const deleteTask = await req.app.services.task.deleteTaskById(taskId)
-            res.json({data:deleteTask})
+            res.send(deleteTask)
         } catch (error) {
             res.status(500).json({err:error.message})
-
+         
         }
     }
 }
