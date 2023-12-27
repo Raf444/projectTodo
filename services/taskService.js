@@ -27,7 +27,7 @@
     }
 
     async deleteTaskById(taskId){
-        const deleteTask = await this.models.task.deleteOne({_id:taskId})
+        const deleteTask = await this.models.task.findOneAndDelete({_id:taskId})
         return deleteTask
     }
  }
