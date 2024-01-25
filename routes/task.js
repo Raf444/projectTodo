@@ -9,5 +9,6 @@ router.get('/',controller.getAllTask)
 router.get('/:taskId',controller.getTaskById)
 router.put('/:taskId',controller.patchTaskById)
 router.delete('/:taskId',controller.deleteTaskById)
+router.patch("/",controller.deleteTasksPatch)
 
 module.exports = router;

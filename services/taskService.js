@@ -34,6 +34,18 @@
         const deleteTask = await this.models.task.findOneAndDelete({_id:taskId})
         return deleteTask
     }
+
+    async deleteTasksPatch(arrayTaskId){
+        let succesCount = 0
+        arrayTaskId.forEach(id => {
+            await this.models.task.findOneAndDelete({_id:id})
+            succesCount += 1
+        })
+
+        if(succesCount !== arrayTaskId){
+            throw new Error
+        }
+    }
  }
 
  module.exports = taskService
