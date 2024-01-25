@@ -46,7 +46,7 @@ class taskController{
         const {taskId} = req.params
         try {
             const deleteTask = await req.app.services.task.deleteTaskById(taskId)
-            res.send(deleteTask)
+            res.json({success:true})
         } catch (error) {
             res.status(500).json({err:error.message})
          
