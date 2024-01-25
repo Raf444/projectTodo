@@ -35,17 +35,20 @@
         return deleteTask
     }
 
-    async deleteTasksPatch(arrayTaskId){
-        let succesCount = 0
-        arrayTaskId.forEach(id => {
-            await this.models.task.findOneAndDelete({_id:id})
-            succesCount += 1
-        })
-
-        if(succesCount !== arrayTaskId){
-            throw new Error
+    async deleteTasksPatch(arrayTaskId) {
+        try {
+            const result = await this.models.task.deleteMany({ _id: { $in: arrayTaskId } });
+    
+            if (result.deletedCount !== arrayTaskId.length) {
+                throw new Error('Not all tasks were deleted successfully.');
+            }
+        } catch (error) {
+            throw new Error(`Error deleting tasks: ${error.message}`);
         }
     }
- }
+    
+       
+    }
+ 
 
  module.exports = taskService
