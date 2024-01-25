@@ -7,7 +7,7 @@ const controller = new taskController()
 router.post('/',controller.postTask)
 router.get('/',controller.getAllTask)
 router.get('/:taskId',controller.getTaskById)
-router.patch('/:taskId',controller.patchTaskById)
+router.put('/:taskId',controller.patchTaskById)
 router.delete('/:taskId',controller.deleteTaskById)
 
 module.exports = router;

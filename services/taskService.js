@@ -17,12 +17,16 @@
     }
 
     async getTaskById(taskId){
-        const task = await this.models.task.find({_id:taskId})
-        return task
+        const task = await this.models.task.findOne({_id:taskId})
+        if(task){
+            return task
+        }else{
+            throw new Error("task note found ")
+        }
     }
 
     async patchTaskById(taskId,body){
-        const patchTask = await this.models.task.updateOne({_id:taskId},{$set:body})
+        const patchTask = await this.models.task.updateOne({_id:taskId},{$set:body})//! {...body}
         return patchTask
     }
 

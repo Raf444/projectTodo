@@ -25,7 +25,7 @@ class taskController{
             const task = await req.app.services.task.getTaskById(taskId)
             res.send(task)
         } catch (error) {
-            res.status(500).json({err:error.message})
+            res.status(404).json({err:error.message})
 
         }
     }
